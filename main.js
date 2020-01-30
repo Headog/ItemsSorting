@@ -1,15 +1,17 @@
 "use strict";
-const M=19, N=19, P=1, C=20, FPS=30;
-const HOSTS=[[0,0],[0,N-1],[M-1,0],[M-1,N-1]];
+const M=19, N=19, P=1, C=20, framesPerStep=30; //行数 列数 道路宽度 机器人个数 每步帧数
+const HOSTS=[[0,0],[0,N-1],[M-1,0],[M-1,N-1]]; //基地坐标
 const ctx = document.getElementsByTagName("canvas")[0].getContext("2d");
-const DI = Math.floor(ctx.canvas.height/M);
-const DJ = Math.floor(ctx.canvas.width/N);
-var map=[], robots=[], tasks=[], timeline=[], waiting=[], targets=[], offsetIs=[], offsetJs=[];
-var count=1, tmp, time=0, frame=0;
+const DI = Math.floor(ctx.canvas.height/M); //每格宽度
+const DJ = Math.floor(ctx.canvas.width/N); //每格高度
+//地图 机器人坐标 机器人任务 机器人轨迹 是否需要重新规划路线 机器人目的地 移动偏移高度 移动偏移宽度
+var map=[], robots=[], tasks=[], timeline=[], isWaiting=[], targets=[], offsetIs=[], offsetJs=[];
+var count=1, tmp, time=0, frame=0; //投掷区数量 缓存 当前时间 当前帧数(每步)
 
+//创建地图
 function create()
 {
-    //创建地图
+    
     for (var i=0;i<M;i++) {
         map.push([]);
         for (var j=0;j<N;j++) {
@@ -30,7 +32,7 @@ function create()
         robots.push([]);
         timeline.push([]);
         tasks.push(-Math.floor(Math.random()*HOSTS.length)-1);
-        waiting.push(1);
+        isWaiting.push(1);
         robots[i][0] = Math.floor(Math.random()*M);
         robots[i][1] = Math.floor(Math.random()*N);
         while (map[robots[i][0]][robots[i][1]]>0 || robots[i].isIn(robots,2) || robots[i].isIn(HOSTS)) {
@@ -43,6 +45,7 @@ function create()
         prepare(j);
 }
 
+//绘图
 function draw(frame)
 {
     ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
@@ -61,7 +64,7 @@ function draw(frame)
     }
     ctx.stroke();
 
-    const offsetI=DI*(frame/FPS),offsetJ=DJ*(frame/FPS);
+    const offsetI=DI*(frame/framesPerStep),offsetJ=DJ*(frame/framesPerStep);
     for (var i=0;i<C;i++) {
         if (time==0) {
             offsetIs[i] = 0;
@@ -117,7 +120,7 @@ function draw(frame)
         }
         ctx.fillText(tmp,DJ*(robots[i][1]+0.7)+offsetJs[i],DI*(robots[i][0]+0.85)+offsetIs[i]);
     }
-    //以下还需修改
+    //需修改
     ctx.textAlign = "center";
     ctx.fillStyle = "#000000";
     ctx.font = (DJ/L)+"px 黑体";
@@ -128,10 +131,11 @@ function draw(frame)
     return;
 }
 
+//使用BFS()前的准备
 function prepare(robot=0)
 {
     var track;
-    if (waiting[robot] == -1) {
+    if (isWaiting[robot] == -1) {
         if (tasks[robot] < 0) {
             tasks[robot] = Math.ceil(Math.random()*(count-1));
             track = BFS(robots[robot][0],robots[robot][1],targets[tasks[robot]][0],targets[tasks[robot]][1],tasks[robot]);
@@ -144,16 +148,17 @@ function prepare(robot=0)
             track = BFS(robots[robot][0],robots[robot][1],HOSTS[-tasks[robot]-1][0],HOSTS[-tasks[robot]-1][1],false);
         else
             track = BFS(robots[robot][0],robots[robot][1],targets[tasks[robot]][0],targets[tasks[robot]][1],tasks[robot]);
-        waiting[robot] = -1;
+        isWaiting[robot] = -1;
     }
     timeline[robot] = timeline[robot].concat(track);
     return;
 }
 
+//改变机器人坐标
 function move(robot=0)
 {
     if (timeline[robot][time] == robots[robot]) {
-        waiting[robot] = 1;
+        isWaiting[robot] = 1;
         return true;
     } else {
         robots[robot][0] = timeline[robot][time][0];
@@ -164,12 +169,13 @@ function move(robot=0)
     return false;
 }
 
+//主程序
 function main()
 {
     //console.log(timeline);
     draw(frame++);
 
-    if (frame==FPS) {
+    if (frame==framesPerStep) {
         frame=0;
         for (var i=0;i<C;i++)
             if(move(i))

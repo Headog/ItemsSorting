@@ -1,4 +1,7 @@
+//深度优先搜索
 "use strict";
+
+//定义节点
 class Point {
     constructor()
     {
@@ -22,6 +25,7 @@ function BFS(sx=0,sy=0,ex=0,ey=0,target=false)
     const DIR=[[-1,0],[0,1],[1,0],[0,-1]];
 
     var p=[],tmp=new Point;
+    //用于检测并执行数组p是否需要添加新节点
     function sp(ref)
     {
         if (ref >= p.length)
@@ -30,6 +34,7 @@ function BFS(sx=0,sy=0,ex=0,ey=0,target=false)
     }
     var track=[];
 
+    //用于保存结果
     function output(n)
     {
         if (n==0)
@@ -58,7 +63,7 @@ function BFS(sx=0,sy=0,ex=0,ey=0,target=false)
         for (var i=0;i<4;i++) {
             xx = tmp.x+DIR[i][0];
             yy = tmp.y+DIR[i][1];
-            //修改
+            //需修改
             if (xx<0 || xx>=M || yy<0 || yy>=N || vis[xx][yy])
                 continue;
             if (target>0 && ![xx,yy].equals([ex,ey]) && [xx,yy].isIn(targets))
