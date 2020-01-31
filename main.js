@@ -1,11 +1,11 @@
 "use strict";
-const M=19, N=19, P=1, C=20, framesPerStep=30; //行数 列数 道路宽度 机器人个数 每步帧数
+const M=19, N=19, P=1, C=20, framesPerStep=60; //行数 列数 道路宽度 机器人个数 每步帧数
 const HOSTS=[[0,0],[0,N-1],[M-1,0],[M-1,N-1]]; //基地坐标
 const ctx = document.getElementsByTagName("canvas")[0].getContext("2d");
 const DI = Math.floor(ctx.canvas.height/M); //每格宽度
 const DJ = Math.floor(ctx.canvas.width/N); //每格高度
-//地图 机器人坐标 机器人任务 机器人轨迹 是否需要重新规划路线 机器人目的地 移动偏移高度 移动偏移宽度
-var map=[], robots=[], tasks=[], timeline=[], isWaiting=[], targets=[], offsetIs=[], offsetJs=[];
+//存储: 地图 机器人坐标 机器人任务 机器人轨迹 是否需要重新规划路线 某格是否在未来被使用 机器人目的地 移动偏移高度 移动偏移宽度
+var map=[], robots=[], tasks=[], timeline=[], isWaiting=[], isUsed=[], targets=[], offsetIs=[], offsetJs=[];
 var count=1, tmp, time=0, frame=0; //投掷区数量 缓存 当前时间 当前帧数(每步)
 
 //创建地图
@@ -138,26 +138,31 @@ function prepare(robot=0)
     if (isWaiting[robot] == -1) {
         if (tasks[robot] < 0) {
             tasks[robot] = Math.ceil(Math.random()*(count-1));
-            track = BFS(robots[robot][0],robots[robot][1],targets[tasks[robot]][0],targets[tasks[robot]][1],tasks[robot]);
+            track = BFS(robots[robot][0],robots[robot][1],targets[tasks[robot]][0],targets[tasks[robot]][1],time,tasks[robot]);
         } else {
             tasks[robot] = -Math.floor(Math.random()*HOSTS.length)-1;
-            track = BFS(robots[robot][0],robots[robot][1],HOSTS[-tasks[robot]-1][0],HOSTS[-tasks[robot]-1][1],false);
+            track = BFS(robots[robot][0],robots[robot][1],HOSTS[-tasks[robot]-1][0],HOSTS[-tasks[robot]-1][1],time,false);
         }
     } else {
         if (tasks[robot] < 0)
-            track = BFS(robots[robot][0],robots[robot][1],HOSTS[-tasks[robot]-1][0],HOSTS[-tasks[robot]-1][1],false);
+            track = BFS(robots[robot][0],robots[robot][1],HOSTS[-tasks[robot]-1][0],HOSTS[-tasks[robot]-1][1],time,false);
         else
-            track = BFS(robots[robot][0],robots[robot][1],targets[tasks[robot]][0],targets[tasks[robot]][1],tasks[robot]);
+            track = BFS(robots[robot][0],robots[robot][1],targets[tasks[robot]][0],targets[tasks[robot]][1],time,tasks[robot]);
         isWaiting[robot] = -1;
     }
     timeline[robot] = timeline[robot].concat(track);
+    for (var i=time;i<timeline[robot].length;i++) {
+        if (i>=isUsed.length)
+            isUsed.push([]);
+        isUsed[i][timeline[robot][i]] = true;
+    }
     return;
 }
 
 //改变机器人坐标
 function move(robot=0)
 {
-    if (timeline[robot][time] == robots[robot]) {
+    if (timeline[robot][time].equals(robots[robot])) {
         isWaiting[robot] = 1;
         return true;
     } else {

@@ -13,15 +13,16 @@ class Point {
     }
 }
 
-function BFS(sx=0,sy=0,ex=0,ey=0,target=false)
+function BFS(sx=0,sy=0,ex=0,ey=0,ctime,target=false)
 {
     var xx,yy;
     var vis=[];
-    for (var i=0;i<M;i++)
+    for (var i=0;i<M;i++) {
+        vis.push([]);
         for (var j=0;j<N;j++) {
-            vis.push([]);
             vis[i][j] = false;
         }
+    }
     const DIR=[[-1,0],[0,1],[1,0],[0,-1]];
 
     var p=[],tmp=new Point;
@@ -70,8 +71,9 @@ function BFS(sx=0,sy=0,ex=0,ey=0,target=false)
                 continue;
             if (target===false && [xx,yy].isIn(targets))
                 continue;
-            
-            
+            if (ctime+tmp.step+1<isUsed.length && (isUsed[ctime+tmp.step+1][[xx,yy]] || isUsed[ctime+tmp.step+1][[tmp.x,tmp.y]])) {
+                continue;
+            }
             
             vis[xx][yy] = true;
             p[sp(rear)].x = xx;
@@ -83,7 +85,7 @@ function BFS(sx=0,sy=0,ex=0,ey=0,target=false)
     }
 
     if (end==undefined)
-        return [sx,sy];
+        return [[sx,sy]];
     var tmp=0;
     output(end);
     return track;

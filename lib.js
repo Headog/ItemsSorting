@@ -54,3 +54,12 @@ Number.prototype.getLength = function()
     }
     return length;
 }
+
+function view(ctime)
+{
+    var result=[];
+    for (var i=0;i<C;i++) {
+        result.push(timeline[i][ctime]);
+    }
+    return result;
+}
