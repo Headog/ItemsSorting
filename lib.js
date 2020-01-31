@@ -55,6 +55,7 @@ Number.prototype.getLength = function()
     return length;
 }
 
+//仅用于开发
 function view(ctime)
 {
     var result=[];

@@ -1,5 +1,5 @@
 "use strict";
-const M=19, N=19, P=1, C=20, framesPerStep=60; //行数 列数 道路宽度 机器人个数 每步帧数
+const M=19, N=19, P=1, C=50, framesPerStep=30; //行数 列数 道路宽度 机器人个数 每步帧数
 const HOSTS=[[0,0],[0,N-1],[M-1,0],[M-1,N-1]]; //基地坐标
 const ctx = document.getElementsByTagName("canvas")[0].getContext("2d");
 const DI = Math.floor(ctx.canvas.height/M); //每格宽度
