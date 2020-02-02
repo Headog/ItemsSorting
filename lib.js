@@ -23,7 +23,6 @@ Array.prototype.isIn = function(list2=[],times=-1)
 {
     //判断一个数组是否在另一个数组中 time表示重复次数 time为-1时无限制
     var count=0;
-    //此处若使用for...in...句型会TypeError(鬼知道为什么)
         for (var i=0;i<list2.length;i++) {
             try {
                 if (list2[i].equals(this)) 

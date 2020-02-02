@@ -13,6 +13,7 @@ class Point {
     }
 }
 
+const DIR=[[-1,0],[0,1],[1,0],[0,-1]];
 function BFS(sx=0,sy=0,ex=0,ey=0,ctime,target=false)
 {
     var xx,yy;
@@ -23,7 +24,6 @@ function BFS(sx=0,sy=0,ex=0,ey=0,ctime,target=false)
             vis[i][j] = false;
         }
     }
-    const DIR=[[-1,0],[0,1],[1,0],[0,-1]];
 
     var p=[],tmp=new Point;
     //用于检测并执行数组p是否需要添加新节点
@@ -61,7 +61,7 @@ function BFS(sx=0,sy=0,ex=0,ey=0,ctime,target=false)
         }
 
         front++;
-        for (var i=0;i<4;i++) {
+        for (var i=0;i<DIR.length;i++) {
             xx = tmp.x+DIR[i][0];
             yy = tmp.y+DIR[i][1];
             //需修改

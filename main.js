@@ -1,6 +1,6 @@
 "use strict";
-const M=19, N=19, P=1, C=50, framesPerStep=30; //行数 列数 道路宽度 机器人个数 每步帧数
-const HOSTS=[[0,0],[0,N-1],[M-1,0],[M-1,N-1]]; //基地坐标
+const M=19, N=19, P=1, C=20, framesPerStep=30; //行数 列数 道路宽度 机器人个数 每步帧数
+const HOSTS=[[1,1],[M-2,N-2]]; //基地坐标
 const ctx = document.getElementsByTagName("canvas")[0].getContext("2d");
 const DI = Math.floor(ctx.canvas.height/M); //每格宽度
 const DJ = Math.floor(ctx.canvas.width/N); //每格高度
@@ -87,10 +87,6 @@ function draw(frame)
             offsetJs[i] = -offsetJ;
     }
     //绘制色块
-    ctx.beginPath();
-    ctx.fillStyle = "#0000ff";
-    for (i in HOSTS)
-        ctx.fillRect(DJ*HOSTS[i][1]+1,DI*HOSTS[i][0]+1,DJ-2,DI-2);
     ctx.fillStyle = "#ffffff";
     for (var i=0;i<M;i++)
         for (var j=0;j<N;j++)
@@ -102,7 +98,6 @@ function draw(frame)
     }
     
     //绘制数字*
-    ctx.beginPath();
     for (var i=0;i<C;i++) {
         ctx.fillStyle = "#ffffff";
         ctx.font = (DJ*0.3)+"px 黑体";
@@ -128,19 +123,26 @@ function draw(frame)
         for (var j=0;j<N;j++)
             if (map[i][j]>0)
                 ctx.fillText((Array(L).join(0)+map[i][j]).slice(-L)/*补零*/,DJ*(j+0.5),DI*(i+0.85-1/6));
+    
+    //绘制基地色块(置于顶层)
+    ctx.fillStyle = "#0000ff";
+    for (i in HOSTS)
+        ctx.fillRect(DJ*HOSTS[i][1]+1,DI*HOSTS[i][0]+1,DJ-2,DI-2);
     return;
 }
 
 //使用BFS()前的准备
-function prepare(robot=0)
+function prepare(robot)
 {
     var track;
     if (isWaiting[robot] == -1) {
         if (tasks[robot] < 0) {
             tasks[robot] = Math.ceil(Math.random()*(count-1));
+            console.info("[Info]"+String(robot+1)+"号机器人即将前往"+String(tasks[robot])+"号投掷区");
             track = BFS(robots[robot][0],robots[robot][1],targets[tasks[robot]][0],targets[tasks[robot]][1],time,tasks[robot]);
         } else {
             tasks[robot] = -Math.floor(Math.random()*HOSTS.length)-1;
+            console.info("[Info]"+String(robot+1)+"号机器人即将前往"+String(-tasks[robot])+"号基地");
             track = BFS(robots[robot][0],robots[robot][1],HOSTS[-tasks[robot]-1][0],HOSTS[-tasks[robot]-1][1],time,false);
         }
     } else {
@@ -160,12 +162,15 @@ function prepare(robot=0)
 }
 
 //改变机器人坐标
-function move(robot=0)
+function move(robot)
 {
     if (timeline[robot][time].equals(robots[robot])) {
         isWaiting[robot] = 1;
+        console.info("[Warn]"+String(robot+1)+"号机器人暂时无法前往目的地");
         return true;
     } else {
+        // if(isUsed[timeline[robot][time]])
+        //     timeline[robot] = timeline[robot].slice(0,time-1).concat([timeline[robot][time]]).concat(timeline[robot].slice(time,-1));
         robots[robot][0] = timeline[robot][time][0];
         robots[robot][1] = timeline[robot][time][1];
         if (time >= timeline[robot].length-1)
