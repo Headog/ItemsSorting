@@ -71,9 +71,8 @@ function BFS(sx=0,sy=0,ex=0,ey=0,ctime,target=false)
                 continue;
             if (target===false && [xx,yy].isIn(targets))
                 continue;
-            if (ctime+tmp.step+1<isUsed.length && (isUsed[ctime+tmp.step+1][[xx,yy]] || isUsed[ctime+tmp.step+1][[tmp.x,tmp.y]])) {
+            if (ctime+tmp.step+1<isUsed.length && (isUsed[ctime+tmp.step+1][[xx,yy]] || isUsed[ctime+tmp.step+1][[tmp.x,tmp.y]]))
                 continue;
-            }
             
             vis[xx][yy] = true;
             p[sp(rear)].x = xx;

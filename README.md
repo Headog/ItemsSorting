@@ -1,5 +1,5 @@
 # 模拟物品分拣
-Version: Build 0.4
+Version: Build 0.6
 
 ### 简介 
 本项目主要使用JavaScript编写控制程序，用HTML的Canvas显示。  

@@ -8,6 +8,8 @@ const DJ = Math.floor(ctx.canvas.width/N); //每格高度
 var map=[], robots=[], tasks=[], timeline=[], isWaiting=[], isUsed=[], targets=[], offsetIs=[], offsetJs=[];
 var count=1, tmp, time=0, frame=0; //投掷区数量 缓存 当前时间 当前帧数(每步)
 
+var goToThrowingArea=0, goToBasement=0;
+
 //创建地图
 function create()
 {
@@ -138,11 +140,13 @@ function prepare(robot)
     if (isWaiting[robot] == -1) {
         if (tasks[robot] < 0) {
             tasks[robot] = Math.ceil(Math.random()*(count-1));
-            console.info("[Info]"+String(robot+1)+"号机器人即将前往"+String(tasks[robot])+"号投掷区");
+            //console.info("[Info]"+String(robot+1)+"号机器人即将前往"+String(tasks[robot])+"号投掷区");
+            goToThrowingArea++;
             track = BFS(robots[robot][0],robots[robot][1],targets[tasks[robot]][0],targets[tasks[robot]][1],time,tasks[robot]);
         } else {
             tasks[robot] = -Math.floor(Math.random()*HOSTS.length)-1;
-            console.info("[Info]"+String(robot+1)+"号机器人即将前往"+String(-tasks[robot])+"号基地");
+            //console.info("[Info]"+String(robot+1)+"号机器人即将前往"+String(-tasks[robot])+"号基地");
+            goToBasement++;
             track = BFS(robots[robot][0],robots[robot][1],HOSTS[-tasks[robot]-1][0],HOSTS[-tasks[robot]-1][1],time,false);
         }
     } else {
@@ -166,18 +170,20 @@ function move(robot)
 {
     if (timeline[robot][time].equals(robots[robot])) {
         isWaiting[robot] = 1;
-        console.info("[Warn]"+String(robot+1)+"号机器人暂时无法前往目的地");
+        //console.info("[Warn]"+String(robot+1)+"号机器人暂时无法前往目的地");
         return true;
     } else {
         // if(isUsed[timeline[robot][time]])
         //     timeline[robot] = timeline[robot].slice(0,time-1).concat([timeline[robot][time]]).concat(timeline[robot].slice(time,-1));
         robots[robot][0] = timeline[robot][time][0];
         robots[robot][1] = timeline[robot][time][1];
-        if (time >= timeline[robot].length-1)
+        if (time >= timeline[robot].length-1) {
             return true;
+        }
     }
     return false;
 }
+
 
 //主程序
 function main()
@@ -190,6 +196,8 @@ function main()
         for (var i=0;i<C;i++)
             if(move(i))
                 prepare(i);
+        if (time%5==0)
+            console.log(String(time)+":"+String(goToThrowingArea)+","+String(goToBasement))
         time++;
     }
     requestAnimationFrame(main);
