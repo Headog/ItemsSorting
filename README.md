@@ -1,36 +1,42 @@
 # 模拟物品分拣
+
 Version: Build 0.6
 
-### 简介 
-本项目主要使用JavaScript编写控制程序，用HTML的Canvas显示。  
+### 简介
+
+本项目主要使用 JavaScript 编写控制程序，用 HTML 的 Canvas 显示。  
 代码注释之后会不断完善。
 
 ### 使用
-1.用浏览器(推荐GoogleChrome或Firefox)打开main.html，但是绝对不要使用InternetExplorer，本项目没有对IE做任何兼容。  
-2.最好打开开发者工具中的JS控制台。  
+
+1.用浏览器(推荐 GoogleChrome 或 Firefox)打开 main.html，但是绝对不要使用 InternetExplorer，本项目没有对 IE 做任何兼容。  
+2.最好打开开发者工具中的 JS 控制台。
 
 没有任何可操作项，只能看。  
-其中黑色小方块代表机器人。其中间白色字代表机器人编号；其右下角数字代表即将前往的地点，数字为白色代表投掷区编号，数字为蓝色代表基地编号。蓝色大方块代表基地(从左到右从上到下四个分别为1号、2号、3号、4号)。白色大方块代表投掷区，其中间黑色数字代表投掷区编号。JS控制台中会显示信息。  
+其中黑色小方块代表机器人。其中间白色字代表机器人编号；其右下角数字代表即将前往的地点，数字为白色代表投掷区编号，数字为蓝色代表基地编号。蓝色大方块代表基地(从左到右从上到下四个分别为 1 号、2 号、3 号、4 号)。白色大方块代表投掷区，其中间黑色数字代表投掷区编号。JS 控制台中会显示信息。
 
 ### 效果图
-![效果图](Screenshot.png)  
+
+![效果图](Screenshot.png)
 
 ### 贡献
-如果你在使用过程中发现任何问题，可以 [提交 issue](https://github.com/Headog/-Simulation-express-sorting/issues/new) 或自行 fork 修改后提交 pull request。  
+
+如果你在使用过程中发现任何问题，可以 [提交 issue](https://github.com/Headog/-Simulation-express-sorting/issues/new) 或自行 fork 修改后提交 pull request。
 
 如果你要提交 pull request，请确保你的代码风格和项目已有的代码保持一致，变量命名清晰，有适当的注释。
 
 ### TODO
+
 主线任务:BFS( )预判避让  
 支线任务:让基地块编号显示  
 支线任务:整理代码(考虑分文件)  
 支线任务:在生成地图时跳过已选择的块减少去重时间  
-支线任务:添加多图层canvas  
+支线任务:添加多图层 canvas  
 支线任务:显示基地编号  
-支线任务:使BFS合理选择dir  
-支线任务:详细说明plan  
-支线任务:取消lib  
-支线任务:不在BFS( )中使用try...except...句型  
-支线任务:将HOSTS的下标改为从1开始  
+支线任务:使 BFS 合理选择 dir  
+支线任务:详细说明 plan  
+支线任务:取消 lib  
+支线任务:不在 BFS( )中使用 try...except...句型  
+支线任务:将 HOSTS 的下标改为从 1 开始
 
-已知BUG:投掷区数字只有在两位时才能显示正常  
+已知 BUG:投掷区数字只有在两位时才能显示正常
